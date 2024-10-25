@@ -1,5 +1,6 @@
 resource "google_storage_bucket" "static" {
  name          = "se-data-landing-ankur"
+ project       = "ee-india-se-data"
  location      = "US"
  storage_class = "STANDARD"
 
