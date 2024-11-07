@@ -25,24 +25,38 @@ jobs:
           create_credentials_file: true
           export_environment_variables: true
 
-      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.5.7
 
-      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Configure Terraform Provider Plugin Cache
+        run: |
+          plugin_cache_dir="$HOME/.terraform.d/plugin-cache"
+          printf 'plugin_cache_dir="%s"' "${plugin_cache_dir}" > ~/.terraformrc
+          mkdir --parents "${plugin_cache_dir}"
+
+      - name: Cache Terraform
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+
       - name: Terraform Init
         working-directory: terraform
         run: terraform init
 
-      # Generates an execution plan for Terraform
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
       - name: Terraform Plan
         working-directory: terraform
         run: terraform plan
 
-      # On push to "main", build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
         working-directory: terraform
         run: terraform apply -auto-approve

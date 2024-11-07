@@ -201,3 +201,5 @@ override.tf.json
 terraform.rc
 
 output/*
+
+logs/
