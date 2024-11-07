@@ -202,4 +202,5 @@ terraform.rc
 
 output/*
 
-logs/
+logs
+logs/**
