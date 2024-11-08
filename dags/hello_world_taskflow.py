@@ -61,18 +61,14 @@ def hello_world_dag():
 
     @task()
     def read_file(file_name):
-        gcs_hook.download(
-            bucket_name=BUCKET_NAME,
-            object_name=file_name,
-            filename=DOWNLOAD_FILE_PATH,
-            chunk_size=None,
-            timeout=DEFAULT_TIMEOUT,
-            num_max_attempts=1,
-            user_project=None,
-        )
-        file_to_read = open("dags/output/hello_world.txt", "r")
-        for line in file_to_read:
-            logging.info(line)
+        with gcs_hook.provide_file(
+                bucket_name=BUCKET_NAME,
+                object_name=file_name) as gcs_file_handle:
+            logging.info(gcs_file_handle.name)
+            temp_file_path = gcs_file_handle.name
+            with open(temp_file_path, 'r') as temp_file:
+                content = temp_file.read()
+                logging.info(content)
 
     file_name = upload_file()
     read_file(file_name)
