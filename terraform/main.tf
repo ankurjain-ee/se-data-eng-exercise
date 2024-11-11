@@ -10,7 +10,7 @@ resource "google_storage_bucket" "static" {
 
 terraform {
   backend "gcs" {
-    bucket  = "ee-se-data-engg/ankur"
-    prefix  = "terraform/state/"
+    bucket  = "ee-se-data-engg"
+    prefix  = "ankur/terraform/state/"
   }
 }
