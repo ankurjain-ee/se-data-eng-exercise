@@ -14,13 +14,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Export environment variables
-        working-directory: terraform
-        run: |
-          export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
-          export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
-          export SNOWFLAKE_PASSWORD=${{ secrets.SNOWFLAKE_PASSWORD }}
-
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1"
@@ -40,8 +33,16 @@ jobs:
 
       - name: Terraform Plan
         working-directory: terraform
-        run: terraform plan
+        run: |
+          export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
+          export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
+          export SNOWFLAKE_PASSWORD=${{ secrets.SNOWFLAKE_PASSWORD }} 
+          terraform plan
 
       - name: Terraform Apply
         working-directory: terraform
-        run: terraform apply -auto-approve
+        run: |
+          export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
+          export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
+          export SNOWFLAKE_PASSWORD=${{ secrets.SNOWFLAKE_PASSWORD }}
+          terraform apply -auto-approve
