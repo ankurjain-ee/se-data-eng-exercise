@@ -35,14 +35,16 @@ jobs:
         working-directory: terraform
         run: |
           export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
+          export SNOWFLAKE_AUTHENTICATOR=JWT
           export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
-          export SNOWFLAKE_PASSWORD=${{ secrets.SNOWFLAKE_PASSWORD }} 
+          export SNOWFLAKE_PRIVATE_KEY=${{ secrets.SNOWFLAKE_PRIVATE_KEY }} 
           terraform plan
 
       - name: Terraform Apply
         working-directory: terraform
         run: |
           export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
+          export SNOWFLAKE_AUTHENTICATOR=JWT
           export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
-          export SNOWFLAKE_PASSWORD=${{ secrets.SNOWFLAKE_PASSWORD }}
+          export SNOWFLAKE_PRIVATE_KEY=${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
           terraform apply -auto-approve
