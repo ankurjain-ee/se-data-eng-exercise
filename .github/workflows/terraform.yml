@@ -34,6 +34,7 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform
         run: |
+          echo $SNOWFLAKE_PRIVATE_KEY > private-key.pem
           export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
           export SNOWFLAKE_AUTHENTICATOR=JWT
           export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
@@ -43,6 +44,7 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform
         run: |
+          echo $SNOWFLAKE_PRIVATE_KEY > private-key.pem
           export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
           export SNOWFLAKE_AUTHENTICATOR=JWT
           export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
