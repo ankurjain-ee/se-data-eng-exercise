@@ -37,7 +37,7 @@ jobs:
           export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
           export SNOWFLAKE_AUTHENTICATOR=JWT
           export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
-          export SNOWFLAKE_PRIVATE_KEY=${{ secrets.SNOWFLAKE_PRIVATE_KEY }} 
+          export SNOWFLAKE_PRIVATE_KEY=`${{ secrets.SNOWFLAKE_PRIVATE_KEY }}`
           terraform plan
 
       - name: Terraform Apply
@@ -46,5 +46,5 @@ jobs:
           export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
           export SNOWFLAKE_AUTHENTICATOR=JWT
           export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
-          export SNOWFLAKE_PRIVATE_KEY=${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+          export SNOWFLAKE_PRIVATE_KEY=`${{ secrets.SNOWFLAKE_PRIVATE_KEY }}`
           terraform apply -auto-approve
