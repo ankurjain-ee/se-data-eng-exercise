@@ -34,11 +34,14 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform
         run: |
-          export TF_VAR_snowflake_private_key=`${{ secrets.SNOWFLAKE_PRIVATE_KEY }} | base64 -d`
+          echo ${{ secrets.SNOWFLAKE_PRIVATE_KEY }} | base64 -d > private_key.p8
+          export TF_VAR_snowflake_private_key_path="private_key.p8"
+          export TF_VAR_snowflake_passphrase=${{ secrets.SNOWFLAKE_PASSPHRASE }}
           terraform plan
 
       - name: Terraform Apply
         working-directory: terraform
         run: |
-          export TF_VAR_snowflake_private_key=`${{ secrets.SNOWFLAKE_PRIVATE_KEY }} | base64 -d`
+          export TF_VAR_snowflake_private_key_path="private_key.p8"
+          export TF_VAR_snowflake_passphrase=${{ secrets.SNOWFLAKE_PASSPHRASE }}
           terraform apply -auto-approve
