@@ -34,19 +34,11 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform
         run: |
-          echo ${{ secrets.SNOWFLAKE_PRIVATE_KEY }} > private_key.p8
-          export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
-          export SNOWFLAKE_AUTHENTICATOR=JWT
-          export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
-          export SNOWFLAKE_PRIVATE_KEY=`cat private_key.p8`
+          export TF_VAR_snowflake_private_key=`${{ secrets.SNOWFLAKE_PRIVATE_KEY }} | base64 -d`
           terraform plan
 
       - name: Terraform Apply
         working-directory: terraform
         run: |
-          echo ${{ secrets.SNOWFLAKE_PRIVATE_KEY }} > private_key.p8
-          export SNOWFLAKE_ACCOUNT=${{ secrets.SNOWFLAKE_ACCOUNT }}
-          export SNOWFLAKE_AUTHENTICATOR=JWT
-          export SNOWFLAKE_USER=${{ secrets.SNOWFLAKE_USER }}
-          export SNOWFLAKE_PRIVATE_KEY=`cat private_key.p8`
+          export TF_VAR_snowflake_private_key=`${{ secrets.SNOWFLAKE_PRIVATE_KEY }} | base64 -d`
           terraform apply -auto-approve

@@ -1,6 +1,6 @@
 resource "google_storage_bucket" "static" {
-  name          = "se-data-landing-ankur"
-  project       = "ee-india-se-data"
+  name          = var.gcs_bucket_name
+  project       = var.gcs_project
   location      = "US"
   storage_class = "STANDARD"
 
@@ -177,6 +177,14 @@ resource "snowflake_table" "table" {
     }
   }
 
+}
+
+provider "snowflake" {
+  user = "ankurjain"
+  authenticator = "JWT"
+  private_key = var.snowflake_private_key
+  account  = var.snowflake_account
+  role = "SE_DE_PARTICIPANT"
 }
 
 terraform {
