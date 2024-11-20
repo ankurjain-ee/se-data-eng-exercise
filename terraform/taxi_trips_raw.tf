@@ -7,16 +7,6 @@ resource "snowflake_table" "table" {
   change_tracking             = true
 
   column {
-    name     = "id"
-    type     = "int"
-    nullable = true
-
-    default {
-      sequence = snowflake_sequence.sequence.fully_qualified_name
-    }
-  }
-
-  column {
     name     = "vendor_name"
     type     = "VARCHAR(16777216)"
     nullable = true
