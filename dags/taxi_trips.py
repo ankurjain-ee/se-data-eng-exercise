@@ -1,28 +1,42 @@
-from __future__ import annotations
-
-from datetime import datetime
-from pathlib import Path
-
-from airflow.providers.google.cloud.hooks.gcs import GCSHook
+from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
+from pendulum import datetime, duration
 from airflow.decorators import dag, task
 
-import logging
+_SNOWFLAKE_CONN_ID = "snowflake_conn_id"
+_SNOWFLAKE_DB = "EE_SE_DE_DB"
+_SNOWFLAKE_SCHEMA = "ANKURJ"
+_SNOWFLAKE_TABLE = "aj_taxi_trips_raw"
+DAG_ID = "taxi_trips"
 
-ENV_ID = "DEV"
-
-PROJECT_ID = "ee-india-se-data"
-
-DAG_ID = "taxi_trip"
-
-BUCKET_NAME = "se-data-landing-ankur"
-
-FILE_NAME = "hello_world.txt"
-
-UPLOAD_FILE_PATH = str(Path(__file__).parent / "resources" / FILE_NAME)
-
-DOWNLOAD_FILE_PATH = str(Path(__file__).parent / "output" / FILE_NAME)
-
-DEFAULT_TIMEOUT = 60
+query = """
+COPY INTO EE_SE_DE_DB.ANKURJ."aj_taxi_trips_raw"
+FROM (SELECT
+$1,
+$2,
+$3,
+$4,
+$5,
+$6,
+$7,
+$8,
+$9,
+$10,
+$11,
+$12,
+$13,
+$14,
+$15,
+$16,
+$17,
+$18,
+$19,
+$20,
+$21,
+$22,
+CURRENT_TIMESTAMP as created_timestamp
+FROM '@"EE_SE_DE_DB"."ANKURJ"."taxi_trips"/')
+FILE_FORMAT = (FORMAT_NAME = 'EE_SE_DE_DB.ANKURJ."taxi_trips_csv"');
+"""
 
 @dag(
 DAG_ID,
@@ -33,20 +47,16 @@ DAG_ID,
 )
 def taxi_trip_dag():
 
-    gcs_hook = GCSHook(
-        google_cloud_storage_conn_id="google_cloud_default",
-        impersonation_chain=None,
+    shook = SnowflakeHook(
+        snowflake_conn_id=_SNOWFLAKE_CONN_ID,
     )
 
     @task()
-    def check_for_new_files():
-        file_list = gcs_hook.list(
-            bucket_name=BUCKET_NAME,
-            prefix="taxi_trips/taxi_trips_",
+    def ingestDataIntoRAWLayer():
+        snowflake_op_template_file = shook.run(
+            sql = query,
         )
-        for file in file_list:
-            logging.info(file)
 
-    check_for_new_files()
+    ingestDataIntoRAWLayer()
 
 taxi_trip_dag()
