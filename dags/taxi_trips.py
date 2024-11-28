@@ -9,7 +9,7 @@ _SNOWFLAKE_TABLE = "aj_taxi_trips_raw"
 DAG_ID = "taxi_trips"
 
 query = """
-COPY INTO EE_SE_DE_DB.ANKURJ."aj_taxi_trips_raw"
+COPY INTO EE_SE_DE_DB.ANKURJ.taxi_trips_raw
 FROM (SELECT
 $1,
 $2,
@@ -52,11 +52,11 @@ def taxi_trip_dag():
     )
 
     @task()
-    def ingestDataIntoRAWLayer():
+    def ingest_data_into_raw_layer():
         snowflake_op_template_file = shook.run(
             sql = query,
         )
 
-    ingestDataIntoRAWLayer()
+    ingest_data_into_raw_layer()
 
 taxi_trip_dag()

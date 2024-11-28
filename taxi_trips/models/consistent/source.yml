@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: taxi_trips
+    database: EE_SE_DE_DB
+    schema: ANKURJ
+    tables:
+      - name: taxi_trips_raw

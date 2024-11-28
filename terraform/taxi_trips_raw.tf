@@ -1,139 +1,139 @@
 resource "snowflake_table" "table" {
   database                    = snowflake_schema.schema.database
   schema                      = snowflake_schema.schema.name
-  name                        = "aj_taxi_trips_raw"
+  name                        = "TAXI_TRIPS_RAW"
   comment                     = "RAW Taxi Trips Data"
   cluster_by                  = ["to_date(CREATED_TIMESTAMP)"]
   change_tracking             = true
 
   column {
-    name     = "vendor_name"
+    name     = "VENDOR_NAME"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "tpep_pickup_datetime"
+    name     = "TPEP_PICKUP_DATETIME"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "tpep_dropoff_datetime"
+    name     = "TPEP_DROPOFF_DATETIME"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "passenger_count"
+    name     = "PASSENGER_COUNT"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "trip_distance"
+    name     = "TRIP_DISTANCE"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "pickup_longitude"
+    name     = "PICKUP_LONGITUDE"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "pickup_latitude"
+    name     = "PICKUP_LATITUDE"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "RatecodeID"
+    name     = "RATECODEID"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "store_and_fwd_flag"
+    name     = "STORE_AND_FWD_FLAG"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "dropoff_longitude"
+    name     = "DROPOFF_LONGITUDE"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "dropoff_latitude"
+    name     = "DROPOFF_LATITUDE"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "payment_type"
+    name     = "PAYMENT_TYPE"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "payment_type_name"
+    name     = "PAYMENT_TYPE_NAME"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "fare_amount"
+    name     = "FARE_AMOUNT"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "extra"
+    name     = "EXTRA"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "mta_tax"
+    name     = "MTA_TAX"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "tip_amount"
+    name     = "TIP_AMOUNT"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "tolls_amount"
+    name     = "TOLLS_AMOUNT"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "improvement_surcharge"
+    name     = "IMPROVEMENT_SURCHARGE"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "total_amount"
+    name     = "TOTAL_AMOUNT"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "trip_duration_minutes"
+    name     = "TRIP_DURATION_MINUTES"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
 
   column {
-    name     = "trip_speed_mph"
+    name     = "TRIP_SPEED_MPH"
     type     = "VARCHAR(16777216)"
     nullable = true
   }
