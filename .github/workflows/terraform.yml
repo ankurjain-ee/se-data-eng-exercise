@@ -8,7 +8,6 @@ on:
 env:
   TF_VAR_snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
   TF_VAR_snowflake_private_key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
-  TF_VAR_snowflake_passphrase: ${{ secrets.SNOWFLAKE_PASSPHRASE }}
 
 jobs:
   gcp-create-bucket:

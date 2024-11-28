@@ -15,7 +15,6 @@ provider "snowflake" {
   user = "ankurjain"
   authenticator = "JWT"
   private_key = var.snowflake_private_key
-  private_key_passphrase = var.snowflake_passphrase
   account  = "gusdatd-dab70621"
   role = "SE_DE_PARTICIPANT"
 }

@@ -56,7 +56,15 @@ def taxi_trip_dag():
         snowflake_op_template_file = shook.run(
             sql = query,
         )
+        return True
 
-    ingest_data_into_raw_layer()
+    @task.bash
+    def transform_data_into_consistent_layer(flag):
+        return """
+  dbt run --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+"""
+
+    flag = ingest_data_into_raw_layer()
+    transform_data_into_consistent_layer(flag)
 
 taxi_trip_dag()
