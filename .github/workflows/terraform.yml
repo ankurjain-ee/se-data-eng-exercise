@@ -10,7 +10,7 @@ env:
   TF_VAR_snowflake_private_key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
 
 jobs:
-  gcp-create-bucket:
+  create_gcp_snowflake_resources:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Git Repository

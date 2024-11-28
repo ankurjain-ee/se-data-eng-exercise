@@ -59,12 +59,19 @@ def taxi_trip_dag():
         return True
 
     @task.bash
+    def unit_test_consistent_layer(flag):
+        return """
+                dbt test --select test_type:unit --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                """
+
+    @task.bash
     def transform_data_into_consistent_layer(flag):
         return """
-  dbt run --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
-"""
+                dbt run --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                """
 
     flag = ingest_data_into_raw_layer()
+    flag = unit_test_consistent_layer(flag)
     transform_data_into_consistent_layer(flag)
 
 taxi_trip_dag()
