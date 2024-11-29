@@ -1,4 +1,4 @@
-resource "snowflake_file_format" "example_file_format" {
+resource "snowflake_file_format" "taxi_trips_csv" {
   name        = "taxi_trips_csv"
   database    = snowflake_schema.schema.database
   schema      = snowflake_schema.schema.name
@@ -11,4 +11,5 @@ resource "snowflake_file_format" "example_file_format" {
   error_on_column_count_mismatch = false
   trim_space = true
   empty_field_as_null = true
+  skip_header = 1
 }
