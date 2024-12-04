@@ -8,8 +8,8 @@ WITH cleaned_data AS (
   SELECT
     -- Filter out records with all mandatory fields null or zero
     CASE
-      WHEN pickup_latitude != 0 AND pickup_latitude != 0 AND trip_distance != 0 THEN 1
-      WHEN dropoff_latitude != 0 AND dropoff_longitude != 0 THEN 1
+      WHEN pickup_longitude != 0 AND pickup_latitude != 0 AND trip_distance != 0 THEN 1
+      WHEN dropoff_longitude != 0 AND dropoff_latitude != 0 THEN 1
       ELSE 0
     END AS is_valid,
     COALESCE(vendor_name::NUMBER(18, 15), 1) AS vendor_id,
@@ -22,7 +22,10 @@ WITH cleaned_data AS (
       WHEN tpep_pickup_datetime > tpep_dropoff_datetime THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_pickup_datetime))
       ELSE TRY_TO_TIMESTAMP(tpep_dropoff_datetime)
     END AS tpep_dropoff_datetime,
-    COALESCE(passenger_count, (SELECT AVG(passenger_count) FROM {{ source('taxi_trips', 'taxi_trips_raw') }})) AS passenger_count,
+    CASE
+        WHEN passenger_count = 0 THEN 1
+        ELSE TRY_TO_NUMBER(passenger_count)
+    END AS passenger_count,
     CASE
       WHEN trip_distance = 0 THEN 3959 * ACOS(
         COS(RADIANS(pickup_latitude)) * COS(RADIANS(dropoff_latitude)) *

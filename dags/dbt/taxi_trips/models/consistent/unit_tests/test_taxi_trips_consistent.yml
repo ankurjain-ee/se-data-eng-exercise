@@ -1,0 +1,172 @@
+unit_tests:
+    - name: full_refresh_mode
+      description: "Check taxi trips consistent layer sql with full refresh mode"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: taxi_trips_raw
+      expect:
+        format: csv
+        fixture: taxi_trips_consistent
+
+
+    - name: incremental_mode_with_no_new_data
+      description: "Check taxi trips consistent layer sql with incremental mode and no new data"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: true
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: taxi_trips_raw
+        - input: this
+          format: csv
+          fixture: taxi_trips_consistent
+      expect:
+        rows: []
+
+    - name: incremental_mode_with_new_data
+      description: "Check taxi trips consistent layer sql with incremental mode and new data"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: true
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: taxi_trips_raw_new_data
+        - input: this
+          format: csv
+          fixture: taxi_trips_consistent
+      expect:
+        format: csv
+        fixture: taxi_trips_consistent_new_data
+
+    - name: filter_when_pickup_longitude_and_pickup_latitude_is_zero
+      description: "Check taxi trips consistent layer sql filter when pickup longitude and pickup latitude is zero"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: pickup_longitude_and_pickup_latitude_is_zero
+      expect:
+        rows: []
+
+    - name: filter_when_dropoff_longitude_and_dropoff_latitude_is_zero
+      description: "Check taxi trips consistent layer sql filter when dropoff longitude and dropoff latitude is zero"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: dropoff_longitude_and_dropoff_latitude_zero
+      expect:
+        rows: []
+
+    - name: when_vendor_name_is_empty
+      description: "Check taxi trips consistent layer sql when vendor name is empty"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: vendor_name_is_empty
+      expect:
+        format: csv
+        fixture: expect_vendor_name_is_empty
+
+    - name: when_pickup_datetime_is_null
+      description: "Check taxi trips consistent layer sql when pickup datetime is null"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: pickup_datetime_is_null
+      expect:
+        format: csv
+        fixture: expect_pickup_datetime_is_null
+
+    - name: when_dropoff_datetime_is_null
+      description: "Check taxi trips consistent layer sql when dropoff datetime is null"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: dropoff_datetime_is_null
+      expect:
+        format: csv
+        fixture: expect_dropoff_datetime_is_null
+
+    - name: when_dropoff_less_than_pickup_datetime
+      description: "Check taxi trips consistent layer sql when dropoff less than pickup"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: dropoff_less_than_pickup_datetime
+      expect:
+        format: csv
+        fixture: expect_dropoff_less_than_pickup_datetime
+
+    - name: when_passenger_count_is_zero
+      description: "Check taxi trips consistent layer sql when passenger count is empty"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: passenger_count_is_zero
+      expect:
+        format: csv
+        fixture: expect_passenger_count_is_zero
+
+    - name: when_trip_distance_is_zero
+      description: "Check taxi trips consistent layer sql when trip distance is empty"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: trip_distance_is_zero
+      expect:
+        format: csv
+        fixture: expect_trip_distance_is_zero
+
+    - name: when_pickup_longitude_and_pickup_latitude_is_null
+      description: "Check taxi trips consistent layer sql when pickup longitude and pickup latitude is null"
+      model: taxi_trips_consistent
+      overrides:
+        macros:
+          is_incremental: false
+      given:
+        - input: source('taxi_trips', 'taxi_trips_raw')
+          format: csv
+          fixture: pickup_longitude_and_pickup_latitude_is_null
+      expect:
+        format: csv
+        fixture: expect_pickup_longitude_and_pickup_latitude_is_null
