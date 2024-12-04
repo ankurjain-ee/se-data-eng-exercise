@@ -4,3 +4,46 @@ version: 2
 models:
   - name: taxi_trips_consistent
     description: "Taxi Trips Consistent Layer"
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - vendor_id
+            - tpep_pickup_datetime
+            - pickup_longitude
+            - pickup_latitude
+
+      - dbt_utils.expression_is_true:
+          expression: "tpep_dropoff_datetime >= tpep_pickup_datetime"
+
+      - dbt_utils.expression_is_true:
+          expression: "trip_distance != 0"
+
+      - dbt_utils.expression_is_true:
+          expression: "pickup_longitude != 0"
+
+      - dbt_utils.expression_is_true:
+          expression: "pickup_latitude != 0"
+
+      - dbt_utils.expression_is_true:
+          expression: "dropoff_longitude != 0"
+
+      - dbt_utils.expression_is_true:
+          expression: "dropoff_latitude != 0"
+
+    columns:
+      - name: vendor_id
+        tests:
+          - not_null
+
+      - name: tpep_pickup_datetime
+        tests:
+          - not_null
+
+      - name: pickup_longitude
+        tests:
+          - not_null
+
+      - name: pickup_latitude
+        tests:
+          - not_null

@@ -1,6 +1,6 @@
 unit_tests:
-    - name: taxi_trips_consistent_model_full_refresh_mode
-      description: "Check taxi trips consistent layer sql"
+    - name: full_refresh_mode
+      description: "Check taxi trips consistent layer sql with full refresh mode"
       model: taxi_trips_consistent
       overrides:
         macros:
@@ -14,8 +14,8 @@ unit_tests:
         fixture: taxi_trips_consistent
 
 
-    - name: taxi_trips_consistent_model_incremental_mode_with_no_new_data
-      description: "Check taxi trips consistent layer sql"
+    - name: incremental_mode_with_no_new_data
+      description: "Check taxi trips consistent layer sql with incremental mode and no new data"
       model: taxi_trips_consistent
       overrides:
         macros:
@@ -30,8 +30,8 @@ unit_tests:
       expect:
         rows: []
 
-    - name: taxi_trips_consistent_model_incremental_mode_with_new_data
-      description: "Check taxi trips consistent layer sql"
+    - name: incremental_mode_with_new_data
+      description: "Check taxi trips consistent layer sql with incremental mode and new data"
       model: taxi_trips_consistent
       overrides:
         macros:
