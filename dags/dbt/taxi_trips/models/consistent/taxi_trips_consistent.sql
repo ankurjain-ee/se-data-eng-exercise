@@ -12,7 +12,7 @@ WITH cleaned_data AS (
       WHEN dropoff_longitude != 0 AND dropoff_latitude != 0 THEN 1
       ELSE 0
     END AS is_valid,
-    COALESCE(vendor_name::NUMBER(18, 15), 1) AS vendor_id,
+    COALESCE(vendor_id::NUMBER(18, 15), 1) AS vendor_id,
     CASE
       WHEN tpep_pickup_datetime IS NULL THEN DATEADD(MINUTE, -((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_dropoff_datetime))
       ELSE TRY_TO_TIMESTAMP(tpep_pickup_datetime)
@@ -57,26 +57,18 @@ WITH cleaned_data AS (
     total_amount::NUMBER(18, 15) AS total_amount,
     trip_duration_minutes::NUMBER(18, 15) AS trip_duration_minutes,
     trip_speed_mph::NUMBER(18, 15) AS trip_speed_mph,
-    created_timestamp AS created_timestamp
+    created_timestamp AS created_timestamp,
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        vendor_id,
+        tpep_pickup_datetime,
+        pickup_longitude,
+        pickup_latitude
+      ORDER BY
+        created_timestamp
+    ) AS row_num
   FROM
     {{ source('taxi_trips', 'taxi_trips_raw') }}
-),
-
-duplicates AS (
-  SELECT
-    vendor_id,
-    tpep_pickup_datetime,
-    pickup_longitude,
-    pickup_latitude
-  FROM
-    cleaned_data
-  GROUP BY
-    vendor_id,
-    tpep_pickup_datetime,
-    pickup_longitude,
-    pickup_latitude
-  HAVING
-    COUNT(*) > 1
 ),
 
 taxi_trips_consistent AS (
@@ -86,24 +78,15 @@ taxi_trips_consistent AS (
       cleaned_data
   WHERE
     is_valid = 1
-    AND (vendor_id, tpep_pickup_datetime, pickup_longitude, pickup_latitude) NOT IN (
-      SELECT
-        vendor_id,
-        tpep_pickup_datetime,
-        pickup_longitude,
-        pickup_latitude
-      FROM
-          duplicates
-    )
+    AND row_num = 1
 )
 
 SELECT
   *
+EXCLUDE (is_valid, row_num)
 FROM
   taxi_trips_consistent
-WHERE
-  is_valid = 1
 
 {% if is_incremental() %}
-  AND created_timestamp > (SELECT MAX(created_timestamp) FROM {{ this }})
+  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ this }})
 {% endif %}
