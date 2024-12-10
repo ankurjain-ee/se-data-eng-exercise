@@ -67,7 +67,7 @@ def taxi_trip_dag():
     @task.bash
     def transform_data_into_consistent_layer(flag):
         return """
-                dbt run --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                dbt run --select taxi_trips_consistent --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
                 """
 
     @task.bash

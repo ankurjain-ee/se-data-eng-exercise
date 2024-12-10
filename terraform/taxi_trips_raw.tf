@@ -7,7 +7,7 @@ resource "snowflake_table" "table" {
   change_tracking             = true
 
   column {
-    name     = "VENDOR_ID"
+    name     = "VENDOR_NAME"
     type     = "VARCHAR(16777216)"
     nullable = true
   }

@@ -12,7 +12,7 @@ WITH cleaned_data AS (
       WHEN dropoff_longitude != 0 AND dropoff_latitude != 0 THEN 1
       ELSE 0
     END AS is_valid,
-    COALESCE(vendor_id::NUMBER(18, 15), 1) AS vendor_id,
+    COALESCE(vendor_name::NUMBER(18, 15), 1) AS vendor_name,
     CASE
       WHEN tpep_pickup_datetime IS NULL THEN DATEADD(MINUTE, -((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_dropoff_datetime))
       ELSE TRY_TO_TIMESTAMP(tpep_pickup_datetime)
@@ -20,6 +20,7 @@ WITH cleaned_data AS (
     CASE
       WHEN tpep_dropoff_datetime IS NULL THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_pickup_datetime))
       WHEN tpep_pickup_datetime > tpep_dropoff_datetime THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_pickup_datetime))
+      WHEN tpep_pickup_datetime = tpep_dropoff_datetime THEN DATEADD(MINUTE, -((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_dropoff_datetime))
       ELSE TRY_TO_TIMESTAMP(tpep_dropoff_datetime)
     END AS tpep_dropoff_datetime,
     CASE
@@ -60,7 +61,7 @@ WITH cleaned_data AS (
     created_timestamp AS created_timestamp,
     ROW_NUMBER() OVER (
       PARTITION BY
-        vendor_id,
+        vendor_name,
         tpep_pickup_datetime,
         pickup_longitude,
         pickup_latitude

@@ -1,0 +1,6 @@
+
+version: 2
+
+models:
+  - name: fct_taxi_trips
+    description: "Taxi Trips Facts"
