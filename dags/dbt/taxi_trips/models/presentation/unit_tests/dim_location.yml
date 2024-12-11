@@ -1,0 +1,31 @@
+unit_tests:
+  - name: union_of_pickup_and_dropoff_locations
+    description: "Check mapping for drop_off and pick_up longitude and latitude"
+    model: dim_location
+    given:
+      - input: ref('taxi_trips_consistent')
+        rows:
+          - { pickup_longitude: -73.947151184082031, pickup_latitude: 40.791046142578125, dropoff_longitude: -73.920768737792969, dropoff_latitude: 40.865577697753906 }
+
+    expect:
+      rows:
+        - { longitude: -73.947151184082031, latitude: 40.791046142578125 }
+        - { longitude: -73.920768737792969, latitude: 40.865577697753906 }
+
+  - name: duplicate_location_are_not_added
+    description: "Check mapping for drop_off and pick_up longitude and latitude"
+    model: dim_location
+    given:
+      - input: ref('taxi_trips_consistent')
+        rows:
+          - { pickup_longitude: -73.947151184082031, pickup_latitude: 40.791046142578125, dropoff_longitude: -73.920768737792969, dropoff_latitude: 40.865577697753906 }
+          - { pickup_longitude: -73.947151184082031, pickup_latitude: 40.791046142578125, dropoff_longitude: -74.005996704101563, dropoff_latitude: 40.768730163574219 }
+          - { pickup_longitude: -73.862693786621094, pickup_latitude: 40.781909942626953, dropoff_longitude: -73.955741882324219, dropoff_latitude: 40.781909942626953 }
+
+    expect:
+      rows:
+        - { longitude: -73.947151184082031, latitude: 40.791046142578125 }
+        - { longitude: -73.920768737792969, latitude: 40.865577697753906 }
+        - { longitude: -74.005996704101563, latitude: 40.768730163574219 }
+        - { longitude: -73.862693786621094, latitude: 40.781909942626953 }
+        - { longitude: -73.955741882324219, latitude: 40.781909942626953 }
