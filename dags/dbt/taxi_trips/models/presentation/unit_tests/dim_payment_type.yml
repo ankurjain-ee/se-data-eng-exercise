@@ -1,0 +1,21 @@
+unit_tests:
+  - name: payment_type_name_and_id
+    description: "Check payment_type name and ids mapping"
+    model: dim_payment_type
+    given:
+      - input: ref('taxi_trips_consistent')
+        rows:
+          - {payment_type: 1}
+          - {payment_type: 2}
+          - {payment_type: 3}
+          - {payment_type: 4}
+          - {payment_type: 5}
+          - {payment_type: 6}
+    expect:
+      rows:
+          - {id: 1, name: 'Credit card'}
+          - {id: 2, name: 'Cash'}
+          - {id: 3, name: 'No charge'}
+          - {id: 4, name: 'Dispute'}
+          - {id: 5, name: 'Unknown'}
+          - {id: 6, name: 'Voided trip'}

@@ -1,0 +1,13 @@
+unit_tests:
+  - name: vendor_name_and_id
+    description: "Check vendor name and ids mapping"
+    model: dim_vendor
+    given:
+      - input: ref('taxi_trips_consistent')
+        rows:
+          - {vendor_name: 1}
+          - {vendor_name: 2}
+    expect:
+      rows:
+          - {id: 1, name: 'Creative Mobile Technologies, LLC'}
+          - {id: 2, name: 'VeriFone Inc'}

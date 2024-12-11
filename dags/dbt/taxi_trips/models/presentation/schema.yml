@@ -4,3 +4,15 @@ version: 2
 models:
   - name: fct_taxi_trips
     description: "Taxi Trips Facts"
+
+  - name: dim_vendor
+    description: "Vendor Dimension"
+
+  - name: dim_payment_type
+    description: "Payment Dimension"
+
+  - name: dim_location
+    description: "Location Dimension"
+
+  - name: dim_date
+    description: "Date Dimension"
