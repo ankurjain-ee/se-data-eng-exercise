@@ -2,6 +2,9 @@ unit_tests:
   - name: union_of_pickup_and_dropoff_locations
     description: "Check mapping for drop_off and pick_up longitude and latitude"
     model: dim_location
+    overrides:
+      macros:
+        is_incremental: false
     given:
       - input: ref('taxi_trips_consistent')
         rows:
@@ -15,6 +18,9 @@ unit_tests:
   - name: duplicate_location_are_not_added
     description: "Check mapping for drop_off and pick_up longitude and latitude"
     model: dim_location
+    overrides:
+      macros:
+        is_incremental: false
     given:
       - input: ref('taxi_trips_consistent')
         rows:

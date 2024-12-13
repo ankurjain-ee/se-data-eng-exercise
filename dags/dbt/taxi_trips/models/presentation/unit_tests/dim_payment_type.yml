@@ -2,6 +2,9 @@ unit_tests:
   - name: payment_type_name_and_id
     description: "Check payment_type name and ids mapping"
     model: dim_payment_type
+    overrides:
+      macros:
+        is_incremental: false
     given:
       - input: ref('taxi_trips_consistent')
         rows:

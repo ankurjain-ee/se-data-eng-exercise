@@ -20,7 +20,7 @@ WITH cleaned_data AS (
     CASE
       WHEN tpep_dropoff_datetime IS NULL THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_pickup_datetime))
       WHEN tpep_pickup_datetime > tpep_dropoff_datetime THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_pickup_datetime))
-      WHEN tpep_pickup_datetime = tpep_dropoff_datetime THEN DATEADD(MINUTE, -((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_dropoff_datetime))
+      WHEN tpep_pickup_datetime = tpep_dropoff_datetime THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_dropoff_datetime))
       ELSE TRY_TO_TIMESTAMP(tpep_dropoff_datetime)
     END AS tpep_dropoff_datetime,
     CASE
@@ -48,7 +48,6 @@ WITH cleaned_data AS (
     dropoff_longitude::NUMBER(18, 15) AS dropoff_longitude,
     dropoff_latitude::NUMBER(18, 15) AS dropoff_latitude,
     payment_type AS payment_type,
-    payment_type_name AS payment_type_name,
     fare_amount::NUMBER(18, 15) AS fare_amount,
     extra::NUMBER(18, 15) AS extra,
     mta_tax::NUMBER(18, 15) AS mta_tax,

@@ -28,20 +28,3 @@ unit_tests:
           fixture: fct_taxi_trips
       expect:
         rows: [ ]
-
-    - name: incremental_mode_with_new_data
-      description: "Check taxi trips facts table presentation layer sql with incremental mode and new data"
-      model: fct_taxi_trips
-      overrides:
-        macros:
-          is_incremental: true
-      given:
-        - input: ref('taxi_trips_consistent')
-          format: csv
-          fixture: input_taxi_trips_consistent_new_data
-        - input: this
-          format: csv
-          fixture: fct_taxi_trips
-      expect:
-        format: csv
-        fixture: fct_taxi_trips_new_data

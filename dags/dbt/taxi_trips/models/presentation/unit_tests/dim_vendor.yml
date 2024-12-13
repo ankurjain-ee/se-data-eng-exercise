@@ -2,6 +2,9 @@ unit_tests:
   - name: vendor_name_and_id
     description: "Check vendor name and ids mapping"
     model: dim_vendor
+    overrides:
+      macros:
+        is_incremental: false
     given:
       - input: ref('taxi_trips_consistent')
         rows:

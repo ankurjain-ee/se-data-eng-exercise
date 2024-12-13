@@ -1,6 +1,6 @@
 {{
   config(
-    materialized = 'table'
+    materialized = 'incremental'
   )
 }}
 
@@ -9,7 +9,8 @@ WITH locations AS (
     md5(pickup_longitude || pickup_latitude) AS id,
     pickup_latitude AS latitude,
     pickup_longitude AS longitude,
-    created_timestamp AS created_at
+    CURRENT_TIMESTAMP AS created_at,
+    created_timestamp
   FROM
     {{ ref('taxi_trips_consistent') }}
   UNION
@@ -17,7 +18,8 @@ WITH locations AS (
     md5 (dropoff_longitude || dropoff_latitude) AS id,
     dropoff_latitude AS latitude,
     dropoff_longitude AS longitude,
-    created_timestamp AS created_at
+    CURRENT_TIMESTAMP AS created_at,
+    created_timestamp
   FROM
     {{ ref('taxi_trips_consistent') }}
 )
@@ -29,3 +31,7 @@ SELECT
   created_at
 FROM
   locations
+
+{% if is_incremental() %}
+  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ ref('taxi_trips_consistent') }})
+{% endif %}

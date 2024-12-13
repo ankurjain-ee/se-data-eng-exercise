@@ -79,12 +79,6 @@ resource "snowflake_table" "table" {
   }
 
   column {
-    name     = "PAYMENT_TYPE_NAME"
-    type     = "VARCHAR(16777216)"
-    nullable = true
-  }
-
-  column {
     name     = "FARE_AMOUNT"
     type     = "VARCHAR(16777216)"
     nullable = true

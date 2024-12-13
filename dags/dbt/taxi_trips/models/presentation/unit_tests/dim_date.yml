@@ -2,20 +2,25 @@ unit_tests:
   - name: union_of_pickup_and_dropoff_datetime
     description: "Test mapping for date"
     model: dim_date
+    overrides:
+      macros:
+        is_incremental: false
     given:
        - input: ref('taxi_trips_consistent')
          rows:
            - { tpep_pickup_datetime: 2016-01-01 00:00:02, tpep_dropoff_datetime: 2016-01-01 00:11:14 }
     expect:
       rows:
-        - { datetime: 2016-01-01 00:00:02, year: 2016, month: 01, day: 01 }
-        - { datetime: 2016-01-01 00:11:14, year: 2016, month: 01, day: 01 }
+        - { full_date: 2016-01-01, year: 2016, month: 01, day: 01 }
 
 
 
   - name: duplicate_date_are_not_added
     description: "Check duplicate dates"
     model: dim_date
+    overrides:
+      macros:
+        is_incremental: false
     given:
       - input: ref('taxi_trips_consistent')
         rows:
@@ -26,8 +31,6 @@ unit_tests:
 
     expect:
       rows:
-        - { datetime: 2016-01-01 00:00:02, year: 2016, month: 01, day: 01 }
-        - { datetime: 2016-01-01 00:11:14, year: 2016, month: 01, day: 01 }
-        - { datetime: 2016-01-29 09:19:05, year: 2016, month: 01, day: 29 }
-        - { datetime: 2016-01-01 00:30:02, year: 2016, month: 01, day: 01 }
-        - { datetime: 2016-01-30 09:19:05, year: 2016, month: 01, day: 30 }
+        - { full_date: 2016-01-01, year: 2016, month: 01, day: 01 }
+        - { full_date: 2016-01-29, year: 2016, month: 01, day: 29 }
+        - { full_date: 2016-01-30, year: 2016, month: 01, day: 30 }
