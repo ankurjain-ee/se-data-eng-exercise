@@ -32,7 +32,6 @@ $18,
 $19,
 $20,
 $21,
-$22,
 CURRENT_TIMESTAMP as created_timestamp
 FROM '@"EE_SE_DE_DB"."ANKURJ"."taxi_trips"/')
 FILE_FORMAT = (FORMAT_NAME = 'EE_SE_DE_DB.ANKURJ."taxi_trips_csv"');
@@ -61,25 +60,41 @@ def taxi_trip_dag():
     @task.bash
     def unit_test_consistent_layer(flag):
         return """
-                dbt test --select test_type:unit --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                dbt test --select "tag:consistent,test_type:unit" --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
                 """
 
     @task.bash
     def transform_data_into_consistent_layer(flag):
         return """
-                dbt run --select taxi_trips_consistent --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                dbt run --select tag:consistent --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
                 """
 
     @task.bash
     def data_quality_check_consistent_layer(flag):
         return """
-                dbt test --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                dbt test --select "tag:consistent,test_type:data" --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                """
+
+    @task.bash
+    def unit_test_presentation_layer(flag):
+        return """
+                dbt test --select "tag:presentation,test_type:unit" --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
+                """
+
+    @task.bash
+    def transform_data_into_presentation_layer(flag):
+        return """
+                dbt run --select tag:presentation --profiles-dir /opt/airflow/dags/dbt/profile --project-dir /opt/airflow/dags/dbt/taxi_trips
                 """
 
     flag = ingest_data_into_raw_layer()
     flag = unit_test_consistent_layer(flag)
     flag = transform_data_into_consistent_layer(flag)
-    data_quality_check_consistent_layer(flag)
+    flag = data_quality_check_consistent_layer(flag)
+    flag = unit_test_presentation_layer(flag)
+    flag = transform_data_into_presentation_layer(flag)
+
+
 
 
 taxi_trip_dag()
