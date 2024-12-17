@@ -1,6 +1,7 @@
 {{
   config(
     materialized = 'incremental',
+    merge = True,
     tags=["consistent"]
   )
 }}
@@ -9,9 +10,10 @@ WITH cleaned_data AS (
   SELECT
     -- Filter out records with all mandatory fields null or zero
     CASE
-      WHEN pickup_longitude != 0 AND pickup_latitude != 0 AND trip_distance != 0 THEN 1
-      WHEN dropoff_longitude != 0 AND dropoff_latitude != 0 THEN 1
-      ELSE 0
+      WHEN pickup_longitude = 0 AND pickup_latitude = 0 AND trip_distance = 0 THEN 0
+      WHEN dropoff_longitude = 0 AND dropoff_latitude = 0 THEN 0
+      WHEN pickup_longitude = 0 AND pickup_latitude = 0 THEN 0
+      ELSE 1
     END AS is_valid,
     COALESCE(vendor_name::NUMBER(18, 15), 1) AS vendor_name,
     CASE
@@ -29,6 +31,7 @@ WITH cleaned_data AS (
         ELSE TRY_TO_NUMBER(passenger_count)
     END AS passenger_count,
     CASE
+      WHEN pickup_longitude = dropoff_longitude AND pickup_latitude = dropoff_latitude AND trip_distance = 0 THEN 0.1
       WHEN trip_distance = 0 THEN 3959 * ACOS(
         COS(RADIANS(pickup_latitude)) * COS(RADIANS(dropoff_latitude)) *
         COS(RADIANS(dropoff_longitude) - RADIANS(pickup_longitude)) +
@@ -49,13 +52,13 @@ WITH cleaned_data AS (
     dropoff_longitude::NUMBER(18, 15) AS dropoff_longitude,
     dropoff_latitude::NUMBER(18, 15) AS dropoff_latitude,
     payment_type AS payment_type,
-    fare_amount::NUMBER(18, 15) AS fare_amount,
-    extra::NUMBER(18, 15) AS extra,
-    mta_tax::NUMBER(18, 15) AS mta_tax,
-    tip_amount::NUMBER(18, 15) AS tip_amount,
-    tolls_amount::NUMBER(18, 15) AS tolls_amount,
-    improvement_surcharge::NUMBER(18, 15) AS improvement_surcharge,
-    total_amount::NUMBER(18, 15) AS total_amount,
+    fare_amount::FLOAT AS fare_amount,
+    extra::FLOAT AS extra,
+    mta_tax::FLOAT AS mta_tax,
+    tip_amount::FLOAT AS tip_amount,
+    tolls_amount::FLOAT AS tolls_amount,
+    improvement_surcharge::FLOAT AS improvement_surcharge,
+    total_amount::FLOAT AS total_amount,
     trip_duration_minutes::NUMBER(18, 15) AS trip_duration_minutes,
     trip_speed_mph::NUMBER(18, 15) AS trip_speed_mph,
     created_timestamp AS created_timestamp,
@@ -66,7 +69,7 @@ WITH cleaned_data AS (
         pickup_longitude,
         pickup_latitude
       ORDER BY
-        created_timestamp
+        created_timestamp DESC
     ) AS row_num
   FROM
     {{ source('taxi_trips', 'taxi_trips_raw') }}

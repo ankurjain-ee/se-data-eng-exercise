@@ -1,6 +1,8 @@
 {{
   config(
     materialized = 'incremental',
+    merge = True,
+    unique_key = 'id',
     tags=["presentation"]
   )
 }}
@@ -11,6 +13,7 @@ SELECT
     tpep_pickup_datetime::DATE as full_date,
     YEAR(full_date) as year,
     MONTH(full_date) as month,
+    WEEK(full_date) as week,
     DAY(full_date) as day,
     CURRENT_TIMESTAMP as created_at,
     created_timestamp
@@ -23,6 +26,7 @@ SELECT
     tpep_dropoff_datetime::DATE as full_date,
     YEAR(full_date) as year,
     MONTH(full_date) as month,
+    WEEK(full_date) as week,
     DAY(full_date) as day,
     CURRENT_TIMESTAMP as created_at,
     created_timestamp
@@ -34,10 +38,12 @@ SELECT
     full_date,
     year,
     month,
+    week,
     day,
-    created_at
+    created_at,
+    created_timestamp
 FROM dates
 
 {% if is_incremental() %}
-  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ ref('taxi_trips_consistent') }})
+  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ this }})
 {% endif %}

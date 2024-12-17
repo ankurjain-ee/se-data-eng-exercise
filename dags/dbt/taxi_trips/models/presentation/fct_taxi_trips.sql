@@ -1,6 +1,8 @@
 {{
   config(
     materialized = 'incremental',
+    merge = True,
+    unique_key = 'id',
     tags=["presentation"]
   )
 }}
@@ -39,9 +41,8 @@ WITH fct_taxi_trips AS (
 
 SELECT
     *
-EXCLUDE (created_timestamp)
 FROM fct_taxi_trips
 
 {% if is_incremental() %}
-  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ ref('taxi_trips_consistent') }})
+  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ this }})
 {% endif %}

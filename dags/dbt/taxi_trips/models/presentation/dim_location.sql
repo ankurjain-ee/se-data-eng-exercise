@@ -1,6 +1,8 @@
 {{
   config(
     materialized = 'incremental',
+    merge = True,
+    unique_key = 'id',
     tags=["presentation"]
   )
 }}
@@ -26,13 +28,14 @@ WITH locations AS (
 )
 
 SELECT
-  id,
-  latitude,
-  longitude,
-  created_at
+    id,
+    latitude,
+    longitude,
+    created_at,
+    created_timestamp
 FROM
   locations
 
 {% if is_incremental() %}
-  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ ref('taxi_trips_consistent') }})
+  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ this }})
 {% endif %}

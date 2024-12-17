@@ -1,6 +1,8 @@
 {{
   config(
     materialized = 'incremental',
+    merge = True,
+    unique_key = 'id',
     tags=["presentation"]
   )
 }}
@@ -24,10 +26,13 @@ with payment_type as (
 )
 
 SELECT
-    *
-EXCLUDE(created_timestamp)
+    id,
+    name,
+    created_at,
+    updated_at,
+    created_timestamp
 FROM payment_type
 
 {% if is_incremental() %}
-  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ ref('taxi_trips_consistent') }})
+  WHERE created_timestamp > (SELECT MAX(created_timestamp) FROM {{ this }})
 {% endif %}
