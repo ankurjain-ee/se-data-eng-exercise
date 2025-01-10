@@ -21,9 +21,9 @@ WITH cleaned_data AS (
       ELSE TRY_TO_TIMESTAMP(tpep_pickup_datetime)
     END AS tpep_pickup_datetime,
     CASE
-      WHEN tpep_dropoff_datetime IS NULL THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_pickup_datetime))
-      WHEN tpep_pickup_datetime > tpep_dropoff_datetime THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_pickup_datetime))
-      WHEN tpep_pickup_datetime = tpep_dropoff_datetime THEN DATEADD(MINUTE, ((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_dropoff_datetime))
+      WHEN tpep_dropoff_datetime IS NULL THEN {{ calculate_datetime('trip_distance', 'tpep_pickup_datetime') }}
+      WHEN tpep_pickup_datetime > tpep_dropoff_datetime THEN {{ calculate_datetime('trip_distance', 'tpep_pickup_datetime') }}
+      WHEN tpep_pickup_datetime = tpep_dropoff_datetime THEN {{ calculate_datetime('trip_distance', 'tpep_dropoff_datetime') }}
       ELSE TRY_TO_TIMESTAMP(tpep_dropoff_datetime)
     END AS tpep_dropoff_datetime,
     CASE
@@ -32,11 +32,7 @@ WITH cleaned_data AS (
     END AS passenger_count,
     CASE
       WHEN pickup_longitude = dropoff_longitude AND pickup_latitude = dropoff_latitude AND trip_distance = 0 THEN 0.1
-      WHEN trip_distance = 0 THEN 3959 * ACOS(
-        COS(RADIANS(pickup_latitude)) * COS(RADIANS(dropoff_latitude)) *
-        COS(RADIANS(dropoff_longitude) - RADIANS(pickup_longitude)) +
-        SIN(RADIANS(pickup_latitude)) * SIN(RADIANS(dropoff_latitude))
-      )
+      WHEN trip_distance = 0 THEN {{ calculate_trip_distance('pickup_longitude', 'pickup_latitude', 'dropoff_longitude', 'dropoff_latitude') }}
       ELSE trip_distance
     END AS trip_distance,
     CASE
