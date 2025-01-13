@@ -9,12 +9,7 @@
 WITH cleaned_data AS (
   SELECT
     -- Filter out records with all mandatory fields null or zero
-    CASE
-      WHEN pickup_longitude = 0 AND pickup_latitude = 0 AND trip_distance = 0 THEN 0
-      WHEN dropoff_longitude = 0 AND dropoff_latitude = 0 THEN 0
-      WHEN pickup_longitude = 0 AND pickup_latitude = 0 THEN 0
-      ELSE 1
-    END AS is_valid,
+   {{ filter_mandatory_fields_zero() }},
     COALESCE(vendor_name::NUMBER(18, 15), 1) AS vendor_name,
     CASE
       WHEN tpep_pickup_datetime IS NULL THEN DATEADD(MINUTE, -((trip_distance / 12) * 60), TRY_TO_TIMESTAMP(tpep_dropoff_datetime))
@@ -32,7 +27,7 @@ WITH cleaned_data AS (
     END AS passenger_count,
     CASE
       WHEN pickup_longitude = dropoff_longitude AND pickup_latitude = dropoff_latitude AND trip_distance = 0 THEN 0.1
-      WHEN trip_distance = 0 THEN {{ calculate_trip_distance('pickup_longitude', 'pickup_latitude', 'dropoff_longitude', 'dropoff_latitude') }}
+      WHEN trip_distance = 0 THEN {{ calculate_trip_distance() }}
       ELSE trip_distance
     END AS trip_distance,
     CASE

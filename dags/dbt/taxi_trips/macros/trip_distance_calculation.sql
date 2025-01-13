@@ -1,9 +1,4 @@
-{%- macro calculate_trip_distance(
-    pickup_latitude,
-    pickup_longitude,
-    dropoff_latitude,
-    dropoff_longitude
-) -%}
+{%- macro calculate_trip_distance() -%}
 
 3959 * ACOS(
         COS(RADIANS(pickup_latitude)) * COS(RADIANS(dropoff_latitude)) *
