@@ -44,3 +44,9 @@ jobs:
         working-directory: terraform
         run: |
           terraform apply -auto-approve
+
+      - name: dbt unittest
+        run: |
+          source path/to/venv/bin/activate
+          cd dags/dbt/taxi_trips
+          dbt test --select "test_type:unit" --profiles-dir dags/dbt/profile
