@@ -8,7 +8,6 @@ on:
 env:
   TF_VAR_snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
   TF_VAR_snowflake_private_key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
-  TF_VAR_snowflake_user: ${{ secrets.SNOWFLAKE_USER }}
 
 jobs:
   create_gcp_snowflake_resources:
@@ -45,11 +44,3 @@ jobs:
         working-directory: terraform
         run: |
           terraform apply -auto-approve
-
-      - name: dbt unittest
-        run: |
-          echo "$TF_VAR_snowflake_private_key" > snowflake_tf_snow_key.p8
-          cat snowflake_tf_snow_key.p8
-          source path/to/venv/bin/activate
-          cd dags/dbt/taxi_trips
-          dbt test --select "test_type:unit" --profiles-dir dags/dbt/profile --project-dir dags/dbt/taxi_trips

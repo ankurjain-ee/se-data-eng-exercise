@@ -4,7 +4,7 @@ taxi_trips:
       account: ipb17578.us-east-1
       database: EE_SE_DE_DB
       private_key_passphrase:
-      private_key_path: dags/dbt/profile/snowflake_tf_snow_key.p8
+      private_key_path: /opt/airflow/dags/dbt/profile/snowflake_tf_snow_key.p8
       role: SE_DE_PARTICIPANT
       schema: ANKURJ
       threads: 1
