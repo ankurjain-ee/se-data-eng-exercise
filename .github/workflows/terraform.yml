@@ -57,5 +57,6 @@ jobs:
       - name: dbt unittest
         run: |
           echo "$TF_VAR_snowflake_private_key" > snowflake_tf_snow_key.p8
+          cd dags/dbt/taxi_trips
           dbt deps
-          dbt test --select "test_type:unit" --profiles-dir dags/dbt/profile --project-dir dags/dbt/taxi_trips
+          dbt test --select "test_type:unit" --profiles-dir ../profile
